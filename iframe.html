@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="YES" name="apple-touch-fullscreen">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="-1" http-equiv="Expires">
+    <meta content="no-cache" http-equiv="pragram">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title></title>
+    <style>
+        * { margin: 0; padding: 0; }
+        html, body { width:600px; height: 100%; }
+        iframe { width: 100%; height: 100%; }
+        #canvas1 { width: 100%; height: 100%; position: fixed; top: 0; left: 0; }
+        #toolBox{ width:100%; height:50px; position:fixed; bottom:0;}
+    </style>
+</head>
+
+<body>
+    
+    <div id="mainBox"></div>
+    <iframe src="https://www.baidu.com" id="iframepage" scrolling="no" onload="changeFrameHeight()" frameborder="0"></iframe>
+
+
+
+    <canvas id="canvas1"></canvas>
+    <div id="toolBox">
+        <input type="button" value="保存png图片" id="btn1" />
+        <input type="button" value="保存jpg图片" id="btn2" />
+    </div>
+
+    <script>
+        function changeFrameHeight() {
+            var ifm = document.getElementById("iframepage");
+            ifm.height = document.documentElement.clientHeight;
+
+        }
+
+        window.onresize = function () {
+            changeFrameHeight();
+
+        }
+
+
+        //绘制图片
+        var canvas = document.getElementById('canvas1');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+        //绑定下载事件
+        var btn = document.getElementById('btn1');
+        btn.onclick = function () {
+            var type = 'png';
+            download(type);
+        }
+        document.getElementById('btn2').onclick = function () {
+            var type = 'jpg';
+            download(type);
+        }
+        //图片下载操作,指定图片类型
+        function download(type) {
+            //设置保存图片的类型
+            var imgdata = canvas.toDataURL(type);
+            //将mime-type改为image/octet-stream,强制让浏览器下载
+            var fixtype = function (type) {
+                type = type.toLocaleLowerCase().replace(/jpg/i, 'jpeg');
+                var r = type.match(/png|jpeg|bmp|gif/)[0];
+                return 'image/' + r;
+            }
+            imgdata = imgdata.replace(fixtype(type), 'image/octet-stream')
+            //将图片保存到本地
+            var saveFile = function (data, filename) {
+                var link = document.createElement('a');
+                link.href = data;
+                link.download = filename;
+                var event = document.createEvent('MouseEvents');
+                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                link.dispatchEvent(event);
+            }
+            var filename = new Date().toLocaleDateString() + '.' + type;
+            saveFile(imgdata, filename);
+        }
+
+    </script>
+</body>
+
+</html>
