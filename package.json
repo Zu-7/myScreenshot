@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.18.8",
+    "phantomjs-prebuilt": "^2.1.15",
     "webshot": "^0.18.0"
   }
 }
